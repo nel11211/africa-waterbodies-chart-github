@@ -1,11 +1,8 @@
 import "./style.css";
 import Papa from "papaparse";
 import { defineCustomElements } from "@arcgis/charts-components/loader";
-import {
-  BarChartModel,
-  LineChartModel,
-  convertInlineConfigToLayerConfig
-} from "@arcgis/charts-components";
+import { convertInlineConfigToLayerConfig } from "@arcgis/charts-components";
+import { createModel } from "@arcgis/charts-components/model";
 
 defineCustomElements(window);
 
@@ -40,8 +37,7 @@ async function setupChart() {
   });
 
   // Create a Bar Chart
-  const barChartModel = new BarChartModel();
-  await barChartModel.setup({ iLayer });
+  const barChartModel = await createModel({ iLayer, chartType: "barChart" });
   await barChartModel.setXAxisField("date");
   await barChartModel.setNumericFields(["percent_wet"]);
   await barChartModel.setAggregationType("no_aggregation");
@@ -50,10 +46,10 @@ async function setupChart() {
 
   const barChart = document.querySelector("#bar-chart");
   barChart.model = barChartModel;
+  barChart.actionMode = "zoom";
 
   // Create a Line Chart
-  const lineChartModel = new LineChartModel();
-  await lineChartModel.setup({ iLayer });
+  const lineChartModel = await createModel({ iLayer, chartType: "lineChart" });
   await lineChartModel.setXAxisField("date");
   await lineChartModel.setNumericFields(["percent_wet"]);
   await lineChartModel.setAggregationType("no_aggregation");
@@ -63,6 +59,7 @@ async function setupChart() {
 
   const lineChart = document.querySelector("#line-chart");
   lineChart.model = lineChartModel;
+  lineChart.actionMode = "zoom";
 }
 
 setupChart();
